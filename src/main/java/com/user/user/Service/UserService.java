@@ -1,3 +1,4 @@
+
 package com.user.user.Service;
 
 import com.user.user.Entity.User;
@@ -20,27 +21,29 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User>getUserById(Long id){
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    public void deleteUser(Long id){
-        if (userRepository.existsById(id)){
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void deleteUser(Long id) {
+        if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
-        }else {
-            throw new RuntimeException
-                    ("User with such ID not found" + id);
+        } else {
+            throw new RuntimeException("User with such ID not found: " + id);
         }
     }
 
-    public User updateUser(Long id, User updatedUser){
+    public User updateUser(Long id, User updatedUser) {
         return userRepository.findById(id).map(user -> {
             user.setFirstName(updatedUser.getFirstName());
             user.setLastName(updatedUser.getLastName());
             user.setEmail(updatedUser.getEmail());
+            user.setPassword(updatedUser.getPassword());
             return userRepository.save(user);
-        }).orElseThrow(() -> new RuntimeException(
-                "User not found with ID" + id));
+        }).orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
     }
-
 }
